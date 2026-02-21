@@ -1,0 +1,135 @@
+# ---------------------------
+
+# Build Folders
+
+# ---------------------------
+
+bin/
+obj/
+out/
+publish/
+artifacts/
+
+# ---------------------------
+
+# User-Specific Files
+
+# ---------------------------
+
+_.user
+_.rsuser
+_.suo
+_.userosscache
+\*.sln.docstates
+
+# ---------------------------
+
+# Cache & Temp
+
+# ---------------------------
+
+.vs/
+\_ReSharper*/
+*.[Rr]e[Ss]harper
+_.ncrunch_
+_.localhistory
+[Tt]est[Rr]esult_/
+[Aa]pp[Dd]ata/
+_.DS_Store
+_.orig
+
+# ---------------------------
+
+# Logs
+
+# ---------------------------
+
+\*.log
+logs/
+Log/
+
+# ---------------------------
+
+# Environment / Secrets
+
+# ---------------------------
+
+_.env
+_.env.local
+.env
+secret.json
+appsettings.Development.json
+appsettings.Local.json
+appsettings.\*.local.json
+
+# Allow production config
+
+!appsettings.json
+
+# ---------------------------
+
+# Entity Framework Migrations (optional)
+
+# If you want migrations included, remove this.
+
+# ---------------------------
+
+#migrations/
+
+# ---------------------------
+
+# NuGet
+
+# ---------------------------
+
+_.nupkg
+_.snupkg
+packages/
+.nuget/
+
+# ---------------------------
+
+# Rider / JetBrains
+
+# ---------------------------
+
+.idea/
+_.DotSettings.user
+_.DotSettings
+
+# ---------------------------
+
+# VS Code
+
+# ---------------------------
+
+.vscode/
+\*.code-workspace
+
+# ---------------------------
+
+# Azure / Cloud
+
+# ---------------------------
+
+.local.settings.json
+.azureFunctionsTools/
+
+# ---------------------------
+
+# Publish Settings
+
+# ---------------------------
+
+_.pubxml
+_.publishsettings
+
+# ---------------------------
+
+# Other
+
+# ---------------------------
+
+_.tmp
+_.temp
+Thumbs.db
