@@ -1,319 +1,364 @@
-🚀 Momentum
+# 🚀 Momentum
 
-Clean Architecture implementation using CQRS + MediatR + FluentValidation + AutoMapper + EF Core
+Clean Architecture implementation using CQRS + MediatR + FluentValidation + AutoMapper + EF Core.
 
-📌 Overview
+---
 
-Momentum is built using Clean Architecture principles with strict separation of concerns and a scalable enterprise-ready structure.
+# 📌 Overview
 
-This project implements:
+Momentum follows Clean Architecture principles with strict separation of concerns and enterprise-ready scalability.
 
-✅ Clean Architecture
+Implemented Patterns & Tools:
 
-✅ CQRS (Command Query Responsibility Segregation)
+- Clean Architecture
+- CQRS (Command Query Responsibility Segregation)
+- MediatR (Mediator Pattern)
+- FluentValidation
+- AutoMapper
+- Entity Framework Core
+- Dependency Rule Enforcement
 
-✅ MediatR (Mediator Pattern)
+---
 
-✅ FluentValidation
+# 🏗️ Solution Structure
 
-✅ AutoMapper
-
-✅ Entity Framework Core
-
-✅ Dependency Rule Enforcement
-
-🏗️ Solution Structure
+```
 Momentum.sln
 │
-├── Momentum.API → Presentation Layer
-├── Momentum.Application → Application Layer (CQRS + MediatR)
-├── Momentum.Domain → Core Business Layer
-└── Momentum.Infrastructure → External Implementations
-🧠 Architecture Principles
-🔁 Dependency Rule
+├── Momentum.API              → Presentation Layer
+├── Momentum.Application      → Application Layer (CQRS + MediatR)
+├── Momentum.Domain           → Core Business Layer
+└── Momentum.Infrastructure   → External Implementations
+```
 
-Dependencies must point inward.
+---
 
-API → Application → Domain
-Infrastructure → Application → Domain
+# 🧠 Architecture Principles
 
-❌ Domain must never depend on Application or Infrastructure
-❌ Application must never depend on Infrastructure
+## Dependency Rule
 
-📂 Layer Responsibilities
-🟣 1. Domain Layer (Momentum.Domain)
+Dependencies must always point inward.
+
+Allowed:
+
+API → Application → Domain  
+Infrastructure → Application → Domain  
+
+Not Allowed:
+
+Domain → Application  
+Domain → Infrastructure  
+Application → Infrastructure  
+Application → API  
+
+The Domain layer must never depend on any other layer.
+
+---
+
+# 📂 Layer Responsibilities
+
+---
+
+## 🟣 1. Domain Layer (Momentum.Domain)
 
 Contains core business logic only.
 
 Includes:
-
-Entities
-
-Enums
-
-Value Objects
-
-Domain Exceptions
-
-Business Rules
+- Entities
+- Enums
+- Value Objects
+- Domain Exceptions
+- Business Rules
 
 Must NOT include:
+- EF Core
+- MediatR
+- Controllers
+- AutoMapper
+- External libraries
 
-EF Core
+Example Entity:
 
-MediatR
+```csharp
+public class User
+{
+    public Guid Id { get; private set; }
+    public string Email { get; private set; }
 
-Controllers
+    public User(string email)
+    {
+        Email = email ?? throw new ArgumentNullException(nameof(email));
+    }
+}
+```
 
-AutoMapper
+---
 
-External libraries
+## 🔵 2. Application Layer (Momentum.Application)
 
-🔵 2. Application Layer (Momentum.Application)
+Contains:
+- CQRS implementation
+- MediatR Handlers
+- Validation
+- Mapping
+- Interfaces for infrastructure
 
-Implements:
+Structure:
 
-CQRS
-
-MediatR Handlers
-
-Validation
-
-Mapping
-
-Interfaces for infrastructure
-
-Structure
+```
 Application
 ├── CQRS
-│ ├── Commands
-│ ├── Queries
-│ └── Behaviors
+│   ├── Commands
+│   ├── Queries
+│   └── Behaviors
 ├── DTOs
 ├── Validators
 ├── Mappings
 └── Interfaces
-⚡ CQRS Implementation
-🟢 Commands
+```
 
-Modify system state
+---
 
-Return minimal result (ID / Unit)
+# ⚡ CQRS Pattern
 
-Never return full entities
+## Commands
+- Modify system state
+- Return minimal result (ID or Unit)
+- Never return full entities
 
 Example:
 
+```csharp
 public record CreateUserCommand(string Email) : IRequest<Guid>;
-🔵 Queries
+```
 
-Read-only operations
+---
 
-Return DTOs
-
-No side effects
+## Queries
+- Read-only operations
+- Return DTOs
+- No side effects
 
 Example:
 
+```csharp
 public record GetUserByIdQuery(Guid Id) : IRequest<UserDto>;
-🧩 MediatR Flow
+```
+
+---
+
+# 🧩 MediatR Request Flow
+
+```
 Controller
-↓
+    ↓
 IMediator
-↓
+    ↓
 Pipeline Behaviors
-↓
+    ↓
 Handler
-↓
+    ↓
 Repository Interface
-↓
+    ↓
 Infrastructure Implementation
+    ↓
+Database
+```
 
-Controllers never directly call services or repositories.
+Controllers must never directly call repositories or DbContext.
 
-🔄 Pipeline Behaviors
+---
+
+# 🔄 Pipeline Behaviors
 
 Used for cross-cutting concerns:
+- Validation
+- Logging
+- Performance tracking
+- Transactions
 
-Validation
+Execution Order:
 
-Logging
-
-Performance monitoring
-
-Transactions
-
-Execution order:
-
+```
 Request
-↓
+   ↓
 ValidationBehavior
-↓
+   ↓
 Handler
-↓
+   ↓
 Response
-✅ Validation (FluentValidation)
+```
 
-Validation is handled via MediatR pipeline behavior.
+---
+
+# ✅ Validation (FluentValidation)
+
+Validation occurs before handler execution.
 
 Example:
 
+```csharp
 public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 {
-public CreateUserValidator()
-{
-RuleFor(x => x.Email)
-.NotEmpty()
-.EmailAddress();
+    public CreateUserValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress();
+    }
 }
-}
-🔁 Mapping (AutoMapper)
+```
 
-Maps:
+---
 
-Entity → DTO
+# 🔁 Mapping (AutoMapper)
 
-DTO → Entity
+Used to map:
+
+- Entity → DTO
+- DTO → Entity
 
 Mapping profiles are located in:
 
 Application/Mappings
-🔴 3. Infrastructure Layer (Momentum.Infrastructure)
+
+---
+
+## 🔴 3. Infrastructure Layer (Momentum.Infrastructure)
 
 Handles external concerns:
 
-EF Core DbContext
+- EF Core DbContext
+- Repository implementations
+- Third-party services
+- Email providers
+- File storage
 
-Repository implementations
+Structure:
 
-Third-party services
-
-File storage
-
-Email providers
-
-Structure
+```
 Infrastructure
 ├── Persistence
 ├── Repositories
 └── Services
-🟡 4. API Layer (Momentum.API)
+```
 
-Handles:
+---
 
-Controllers
+## 🟡 4. API Layer (Momentum.API)
 
-Middleware
+Responsible for:
 
-Authentication
+- Controllers
+- Middleware
+- Authentication
+- Dependency Injection
+- Swagger configuration
 
-Dependency Injection
+Rules:
+- Controllers use IMediator only
+- No business logic inside controllers
+- No direct DbContext access
 
-Swagger
+Example Controller:
 
-Controllers must:
+```csharp
+[ApiController]
+[Route("api/users")]
+public class UsersController : ControllerBase
+{
+    private readonly IMediator _mediator;
 
-Only use IMediator
+    public UsersController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
 
-Never access DbContext directly
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateUserCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return Ok(id);
+    }
+}
+```
 
-Never contain business logic
+---
 
-🔁 Full Request Lifecycle
-Client
-↓
-Controller (API)
-↓
-IMediator
-↓
-Pipeline Behaviors
-↓
-Handler (Application)
-↓
-Repository Interface
-↓
-Infrastructure
-↓
-Database
-🔒 Strict Architectural Rules
+# 🔒 Architectural Rules (Strict)
 
-Domain must not reference any other project.
+1. Domain must not reference any other project.
+2. Application must not reference Infrastructure.
+3. Controllers must not contain business logic.
+4. Handlers must not perform validation manually.
+5. Validation must use FluentValidation.
+6. Queries must not modify data.
+7. Commands must not return full entities.
+8. DTOs must not expose EF Core entities.
 
-Application must not reference Infrastructure.
+---
 
-Controllers must not contain business logic.
+# 🧪 Testing Strategy
 
-Handlers must not perform validation directly.
-
-Validation must use FluentValidation.
-
-Queries must not modify state.
-
-Commands must not return full entities.
-
-DTOs must not expose EF entities.
-
-🧪 Testing Strategy
-Unit Tests
-
-Domain entities
-
-Command handlers
-
-Query handlers
+Unit Tests:
+- Domain entities
+- Command handlers
+- Query handlers
 
 Mock:
+- Repository interfaces
+- External services
 
-Repository interfaces
+Integration Tests:
+- Infrastructure layer
+- Database interactions
 
-External services
+---
 
-Integration Tests
+# 🚀 Getting Started
 
-Infrastructure
+Restore packages:
 
-Database interactions
-
-🚀 Getting Started
-1️⃣ Restore packages
+```
 dotnet restore
-2️⃣ Apply migrations
+```
+
+Apply migrations:
+
+```
 dotnet ef database update
-3️⃣ Run API
+```
+
+Run API:
+
+```
 dotnet run --project Momentum.API
-📈 Scalability Strategy
+```
+
+---
+
+# 📈 Scalability Strategy
 
 As the system grows:
 
-Add new Commands/Queries in Application layer
+- Add new Commands/Queries in Application layer
+- Add new Pipeline Behaviors
+- Introduce caching layer if required
+- Implement event-driven architecture if needed
 
-Add new Pipeline Behaviors for cross-cutting concerns
+---
 
-Introduce caching layer if needed
+# 🎯 Why This Architecture?
 
-Add event-driven architecture if required
+- High maintainability
+- Clear separation of concerns
+- Scalable structure
+- Testable business logic
+- Replaceable infrastructure
+- Enterprise-ready foundation
 
-🎯 Why This Architecture?
-Benefit Explanation
-Maintainable Clear separation of concerns
-Testable Handlers isolated
-Scalable Modular design
-Replaceable Infrastructure can be swapped
-Clean No tight coupling
-📌 Tech Stack
+---
 
-.NET 8
+# 🏁 Final Note
 
-MediatR
-
-FluentValidation
-
-AutoMapper
-
-Entity Framework Core
-
-SQL Server
-
-🏁 Final Note
-
-Momentum follows enterprise-grade architectural standards and is designed for long-term maintainability and scalability.
+Momentum is structured for long-term scalability, maintainability, and production-grade architecture standards.
