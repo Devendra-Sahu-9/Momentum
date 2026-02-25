@@ -1,7 +1,9 @@
+import { AppRoutes } from "./app/routes";
+import "./index.css";
 function App() {
   return (
     <>
-      <h1>Momentum first line</h1>
+      <AppRoutes />
     </>
   );
 }
