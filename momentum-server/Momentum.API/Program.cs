@@ -1,3 +1,5 @@
+using System.Reflection;
+using Momentum.Application;
 using Momentum.Extensions;
 using Momentum.Infrastructure;
 
@@ -9,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
 

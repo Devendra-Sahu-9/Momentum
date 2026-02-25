@@ -17,14 +17,14 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public string GenerateToken(string userId, string email, string role)
+    public string GenerateToken(string userId, string phone, string role)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.MobilePhone, phone),
             new Claim(ClaimTypes.Role, role),new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())};
 
         var key = new SymmetricSecurityKey(
