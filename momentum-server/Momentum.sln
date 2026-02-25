@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Momentum.Domain", "Momentum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Momentum.Infrastructure", "Momentum.Infrastructure\Momentum.Infrastructure.csproj", "{CA8430C7-33F6-4E87-830D-829AFEAE401C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Momentum.Persistence", "Momentum.Persistence\Momentum.Persistence.csproj", "{60AB8F7B-A2BF-4C24-849D-8FE4FB4FD0ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{CA8430C7-33F6-4E87-830D-829AFEAE401C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA8430C7-33F6-4E87-830D-829AFEAE401C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA8430C7-33F6-4E87-830D-829AFEAE401C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AB8F7B-A2BF-4C24-849D-8FE4FB4FD0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AB8F7B-A2BF-4C24-849D-8FE4FB4FD0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AB8F7B-A2BF-4C24-849D-8FE4FB4FD0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AB8F7B-A2BF-4C24-849D-8FE4FB4FD0ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
