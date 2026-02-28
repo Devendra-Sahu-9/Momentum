@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Momentum.Persistence.Context;
 using Momentum.Persistence.Interfaces;
 using Momentum.Persistence.Repositories;
 
@@ -12,7 +13,7 @@ namespace Momentum.Persistence
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            // services.AddDbContext<StayMateDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<MomentumDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
