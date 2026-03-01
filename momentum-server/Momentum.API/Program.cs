@@ -1,15 +1,18 @@
-using System.Reflection;
 using Momentum.Application;
 using Momentum.Extensions;
 using Momentum.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//  JWT
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Global Authorization (secure by default)
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy =
@@ -17,11 +20,30 @@ builder.Services.AddAuthorization(options =>
             .RequireAuthenticatedUser()
             .Build();
 });
+
+// CORS (Read from appsettings.json)
+var allowedOrigins = builder.Configuration
+    .GetSection("CorsSettings:AllowedOrigins")
+    .Get<string[]>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+//Clean Architecture registrations
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
 var app = builder.Build();
 
-// Configure middleware
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -29,6 +51,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// CORS must come before Auth
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();

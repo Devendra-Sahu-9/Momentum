@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import { sendOtpApi, verifyOtpApi } from "./api/auth.api";
 
 interface AuthState {
@@ -14,39 +15,44 @@ const initialState: AuthState = {
   step: "phone",
   loading: false,
   error: null,
-  accessToken: null,
+  accessToken: localStorage.getItem("accessToken"),
 };
 
-// 🔥 Async Thunks
-
-export const sendOtp = createAsyncThunk(
-  "auth/sendOtp",
-  async (phoneNumber: string, { rejectWithValue }) => {
-    try {
-      await sendOtpApi(phoneNumber);
-      return phoneNumber;
-    } catch (error: any) {
+// SEND OTP
+export const sendOtp = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("auth/sendOtp", async (phoneNumber, { rejectWithValue }) => {
+  try {
+    await sendOtpApi(phoneNumber);
+    return phoneNumber;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to send OTP",
+        error.response?.data?.message ?? "Failed to send OTP",
       );
     }
-  },
-);
+    return rejectWithValue("Something went wrong");
+  }
+});
 
-export const verifyOtp = createAsyncThunk(
-  "auth/verifyOtp",
-  async (
-    { phoneNumber, otp }: { phoneNumber: string; otp: string },
-    { rejectWithValue },
-  ) => {
-    try {
-      const data = await verifyOtpApi(phoneNumber, otp);
-      return data.accessToken;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Invalid OTP");
+// VERIFY OTP
+export const verifyOtp = createAsyncThunk<
+  string,
+  { phoneNumber: string; otp: string },
+  { rejectValue: string }
+>("auth/verifyOtp", async ({ phoneNumber, otp }, { rejectWithValue }) => {
+  try {
+    const data = await verifyOtpApi(phoneNumber, otp);
+    return data.accessToken;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.message ?? "Invalid OTP");
     }
-  },
-);
+    return rejectWithValue("Something went wrong");
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -59,8 +65,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
-      // SEND OTP
       .addCase(sendOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -72,10 +76,8 @@ const authSlice = createSlice({
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload ?? "Error";
       })
-
-      // VERIFY OTP
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -87,7 +89,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload ?? "Error";
       });
   },
 });

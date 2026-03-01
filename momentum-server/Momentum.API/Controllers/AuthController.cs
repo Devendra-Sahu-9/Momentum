@@ -15,18 +15,19 @@ public class AuthController : ControllerBase
     {
         _mediator = mediator;
     }
-
+    [AllowAnonymous]
     [HttpPost("send-otp")]
     public async Task<IActionResult> SendOtp([FromBody] SendOtpCommand command,CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
-    [Authorize]
+    
+    [AllowAnonymous]
     [HttpGet("verify-otp")]
     public async Task<IActionResult> GetData([FromQuery] VerifyOtpCommand command,CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(command, cancellationToken);
-        return Ok(new { Message = "This is a protected endpoint", User = User.Identity?.Name });
+        return Ok(result);
     }
 }
