@@ -1,6 +1,8 @@
+using Momentum.Application.Common;
+
 namespace Momentum.Infrastructure.Repositories
 {
-    public class MemberRepository : IMemberRepository
+    public class MemberRepository :  IMemberRepository
     {
         
     }
