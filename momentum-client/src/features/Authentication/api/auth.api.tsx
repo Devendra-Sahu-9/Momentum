@@ -6,9 +6,11 @@ export const sendOtpApi = async (phoneNumber: string) => {
 };
 
 export const verifyOtpApi = async (phoneNumber: string, otp: string) => {
-  const response = await api.post("/auth/verify-otp", {
-    phoneNumber,
-    otp,
+  const response = await api.get("/auth/verify-otp", {
+    params: {
+      phoneNumber,
+      otp,
+    },
   });
   return response.data;
 };
