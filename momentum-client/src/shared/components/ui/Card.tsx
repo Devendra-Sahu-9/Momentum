@@ -1,15 +1,15 @@
-import React from "react";
-import clsx from "clsx";
-
-interface CardProps {
+interface AppCardProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className }) => {
+export const Card = ({ children, className = "" }: AppCardProps) => {
   return (
-    <div className={clsx("rounded-xl bg-white shadow-md p-6", className)}>
+    <div
+      className={`bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 ${className}`}
+    >
       {children}
     </div>
   );
 };
+export default Card;

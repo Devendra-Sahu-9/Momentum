@@ -1,15 +1,17 @@
-import CTA from "../components/CTA";
-import Hero from "../components/Hero";
-import Navbar from "../components/Navbar";
+import EngineeringSection from "../components/EngineeringSection";
+import HeroSection from "../components/HeroSection";
+import ModulesSection from "../components/ModulesSection";
+import PublicNavbar from "../components/PublicNavbar";
 
-function HomePage() {
+export const HomePage = () => {
   return (
     <>
-      <Navbar />
-      <CTA />
-      <Hero />
+      <PublicNavbar />
+      <HeroSection />
+      <ModulesSection />
+      <EngineeringSection />
+      {/* <CTASection /> */}
+      {/* <Footer /> */}
     </>
   );
-}
-
-export default HomePage;
+};
